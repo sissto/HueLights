@@ -9,9 +9,9 @@ namespace HueLights.Cli.Commands
   {
     private readonly IAnsiConsole _console;
     private readonly HueService _hueService;
-    private readonly SettingsService _settingsService;
+    private readonly AppSettingsService _settingsService;
 
-    public InitCommand(IAnsiConsole console, HueService hueService, SettingsService settingsService)
+    public InitCommand(IAnsiConsole console, HueService hueService, AppSettingsService settingsService)
     {
       _console = console;
       _hueService = hueService;
@@ -48,7 +48,7 @@ namespace HueLights.Cli.Commands
           var appKey = await _hueService.Register(selectedBridge.IpAddress, Constants.APPNAME, Environment.MachineName);
           if (!string.IsNullOrEmpty(appKey))
           {
-            var newSettings = new Settings { BridgeIpAddress = selectedBridge.IpAddress, BridgeAppKey = appKey };
+            var newSettings = new AppSettings { BridgeIpAddress = selectedBridge.IpAddress, BridgeAppKey = appKey };
             _settingsService.Save(newSettings);
         
             _console.MarkupLine($"[green]Successfully initialized![/]");

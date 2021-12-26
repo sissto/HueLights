@@ -10,10 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
 var registrations = new ServiceCollection();
-registrations.AddSingleton<SettingsService>(factory => new SettingsService(Constants.APPNAME));
+registrations.AddSingleton<AppSettingsService>(factory => new AppSettingsService(Constants.APPNAME));
 registrations.AddTransient<HueService>(factory =>
 {
-  var settingsService = factory.GetService<SettingsService>();
+  var settingsService = factory.GetService<AppSettingsService>();
   return new HueService(settingsService);
 });
 
@@ -34,6 +34,7 @@ app.Configure(config =>
   config.AddBranch("lights", lights =>
   {
     lights.AddCommand<GetAllLightsCommand>("all");
+    lights.AddCommand<SwitchLightCommand>("switch");
   });
 });
 app.Run(args);

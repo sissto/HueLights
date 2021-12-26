@@ -5,9 +5,9 @@ namespace HueLights.Infrastructure.Services
 {
   public class HueService
   {
-    private readonly SettingsService _settingsService;
+    private readonly AppSettingsService _settingsService;
 
-    public HueService(SettingsService settingsService)
+    public HueService(AppSettingsService settingsService)
     {
       _settingsService = settingsService;
     }
@@ -50,6 +50,44 @@ namespace HueLights.Infrastructure.Services
         }));
       }
 
+      return result;
+    }
+
+    public async Task<bool> SwitchLight(bool isOn, IEnumerable<string> lights)
+    {
+      if (lights == null || !lights.Any())
+        return false;
+
+      var client = GetHueClient();
+      if (client == null)
+        return false;
+
+      var command = new LightCommand
+      {
+        On = isOn
+      };
+      var result = await client.SendCommandAsync(command, lights);
+
+      return result != null && result.Errors.Count() == 0;
+    }
+
+    public async Task<HueLight?> GetLightById(string id)
+    {
+      var client = GetHueClient();
+      if (client == null)
+        return default;
+
+      HueLight? result = null;
+      var light = await client.GetLightAsync(id);
+      if (light != null)
+      {
+        result = new HueLight
+        {
+          Id = light.Id,
+          Name = light.Name,
+          IsOn = light.State.On
+        };
+      }
       return result;
     }
 

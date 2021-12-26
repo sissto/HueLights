@@ -3,11 +3,11 @@ using Newtonsoft.Json;
 
 namespace HueLights.Infrastructure.Services
 {
-  public class SettingsService
+  public class AppSettingsService
   {
     private readonly string _appName;
 
-    public SettingsService(string appName)
+    public AppSettingsService(string appName)
     {
       _appName = appName;
     }
@@ -16,7 +16,7 @@ namespace HueLights.Infrastructure.Services
 
     public string FilePath => Path.Combine(FolderPath, "settings.json");
 
-    public Settings? Load()
+    public AppSettings? Load()
     {
       try
       {
@@ -24,7 +24,7 @@ namespace HueLights.Infrastructure.Services
           return default;
 
         string fileContent = File.ReadAllText(FilePath);
-        return JsonConvert.DeserializeObject<Settings>(fileContent);
+        return JsonConvert.DeserializeObject<AppSettings>(fileContent);
       }
       catch (Exception)
       {
@@ -32,7 +32,7 @@ namespace HueLights.Infrastructure.Services
       return default;
     }
 
-    public void Save(Settings settings)
+    public void Save(AppSettings settings)
     {
       if (settings == null)
         return;
